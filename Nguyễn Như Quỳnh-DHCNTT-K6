@@ -1,0 +1,106 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace baitap1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Tinh tong tu 1 den n.");
+
+            //nhap gia tri n
+            Console.Write("\nNhap vao so nguyen n: ");
+            int n = int.Parse(Console.ReadLine());
+
+            //xuat ket qua tinh tong
+            Console.WriteLine("\nTong tu 1 den n la: " + tinhTong(n));
+
+            Console.ReadKey();
+        }
+
+        //ham tinh tong = de quy
+        static int tinhTong(int n)
+        {
+            if (n == 1)
+                return 1;
+            else
+                return tinhTong(n - 1) + n;
+        }
+    }
+}
+========================================================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace baitap2
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Tinh to hop chap k cua n phan tu.");
+
+            //nhap gia tri n, k
+            Console.Write("\nNhap vao so nguyen n: ");
+            int n = int.Parse(Console.ReadLine());
+            Console.Write("\nNhap vao so nguyen k: ");
+            int k = int.Parse(Console.ReadLine());
+
+            //xuat ket qua
+            Console.WriteLine("\nTo hop chap k cua n la: " + tinhToHop(n,k));
+
+            Console.ReadKey();
+        }
+
+        //ham tinh to hop chap k cua n phan tu
+        static int  tinhToHop(int n, int k)
+        {
+            if (k == 0 || n == 0)
+                return 1;
+            else
+                return tinhToHop(n - 1, k) + tinhToHop(n - 1, k - 1);
+        }
+    }
+}
+=======================================================================================================
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace baitap3
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Tinh f(n).");
+
+            //nhap gia tri n
+            Console.Write("\nNhap vao so nguyen n: ");
+            int n = int.Parse(Console.ReadLine());
+
+            //xuat ket qua
+            Console.WriteLine("\nKet qua cua f(n) la: " + f(n));
+
+            Console.ReadKey();
+        }
+
+        //ham tinh f(n)
+        static int  f(int n)
+        {
+            if (n < 3 || n == 3)
+                return n;
+            else
+                return f(n-1) + 2*f(n-2) + 3*f(n-3);
+        }
+    }
+}
