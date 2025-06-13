@@ -1,0 +1,249 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace baitap1._1
+{
+    internal class Program
+    {
+        // 2x^2 + 5x - 1
+        public class DonThuc
+        {
+            public int HeSo;
+            public int SoMu;
+
+            public static DonThuc InitDonThuc(int heSo, int soMu)
+            {
+                DonThuc dt = new DonThuc();
+                dt.HeSo = heSo;
+                dt.SoMu = soMu;
+                return dt;
+            }
+        }
+
+        public class Node
+        {
+            public DonThuc Data;
+            public Node pNext;
+
+            public static Node InitNode(int heSo, int soMu)
+            {
+                Node p = new Node();
+                p.Data = DonThuc.InitDonThuc(heSo, soMu);
+                p.pNext = null;
+
+                return p;
+            }
+        }
+
+        public class DaThuc
+        {
+            public Node pHead;
+            public Node pTail;
+
+            public static DaThuc InitDaThuc()
+            {
+                DaThuc dt = new DaThuc();
+                dt.pHead = null;
+                dt.pTail = null;
+                return dt;
+            }
+
+            //1.1.1 - Them don thuc vao cuoi da thuc
+            public void InsertTail(int heSo, int soMu)
+            {
+                Node p = Node.InitNode(heSo, soMu);
+
+                if (pHead == null)
+                {
+                    pHead = p;
+                    pTail = p;
+                }
+                else
+                {
+                    pTail.pNext = p;
+                    pTail = p;
+                }
+            }
+
+            //1.1.2 - In da thuc, 1.1.4 - Dieu chinh hien thi dung 
+            public void Print()
+            {
+                Node p = pHead;
+                bool isFirst = true;
+
+                while (p != null)
+                {
+                    int heSo = p.Data.HeSo;
+                    int soMu = p.Data.SoMu;
+
+                    if (heSo != 0)
+                    {
+                        // In dau
+                        if (!isFirst)
+                        {
+                            Console.Write(heSo > 0 ? " + " : " - ");
+                        }
+                        else
+                        {
+                            if (heSo < 0)
+                                Console.Write("-");
+                        }
+
+                        int absHeSo = Math.Abs(heSo);
+
+                        if (soMu == 0)
+                        {
+                            Console.Write($"{absHeSo}");
+                        }
+                        else if (soMu == 1)
+                        {
+                            if (absHeSo == 1) Console.Write("x");
+                            else Console.Write($"{absHeSo}x");
+                        }
+                        else
+                        {
+                            if (absHeSo == 1) Console.Write($"x^{soMu}");
+                            else Console.Write($"{absHeSo}x^{soMu}");
+                        }
+
+                        isFirst = false;
+                    }
+
+                    p = p.pNext;
+                }
+
+                if (isFirst)
+                    Console.Write("0"); // Nếu tất cả đơn thức có hệ số 0
+
+                Console.WriteLine();
+            }
+
+
+            //1.1.3 - Tinh gia tri da thuc voi x cho truoc
+            public long Calculate(int x)
+            {
+                long result = 0;
+                Node p = pHead;
+                while (p != null)
+                {
+                    result += p.Data.HeSo * ((int)Math.Pow(x, p.Data.SoMu));
+                    p = p.pNext;
+                }
+
+                return result;
+            }
+
+            //1.1.5 - Sap xep da thuc theo thu tu tang dan so mu
+            public void SapXepTheoSoMu()
+            {
+                if (pHead == null || pHead.pNext == null)
+                    return;
+
+                for (Node i = pHead; i != null; i = i.pNext)
+                {
+                    for (Node j = i.pNext; j != null; j = j.pNext)
+                    {
+                        if (i.Data.SoMu > j.Data.SoMu)
+                        {
+                            // Hoan doi du lieu giua 2 Node
+                            DonThuc temp = i.Data;
+                            i.Data = j.Data;
+                            j.Data = temp;
+                        }
+                    }
+                }
+            }
+
+
+            //1.1.6 - Tinh tong hai da thuc
+            public static DaThuc Sum(DaThuc dt1, DaThuc dt2)
+            {
+                DaThuc sumDt = InitDaThuc(); //khoi tao da thuc moi
+                Node p1 = dt1.pHead;
+                Node p2 = dt2.pHead;
+
+                while (p1 != null || p2 != null)
+                {
+                    if (p1 == null) // Neu da thuc 1 da het
+                    {
+                        sumDt.InsertTail(p2.Data.HeSo, p2.Data.SoMu);
+                        p2 = p2.pNext;
+                    }
+                    else if (p2 == null) // Neu da thuc 2 da het
+                    {
+                        sumDt.InsertTail(p1.Data.HeSo, p1.Data.SoMu);
+                        p1 = p1.pNext;
+                    }
+                    else // Ca 2 da thuc deu con don thuc
+                    {
+                        if (p1.Data.SoMu == p2.Data.SoMu) // So mu bang nhau
+                        {
+                            int sumHeSo = p1.Data.HeSo + p2.Data.HeSo;
+                            if (sumHeSo != 0) // Chi them neu he so tong khac 0
+                            {
+                                sumDt.InsertTail(sumHeSo, p1.Data.SoMu);
+                            }
+                            p1 = p1.pNext;
+                            p2 = p2.pNext;
+                        }
+                        else if (p1.Data.SoMu < p2.Data.SoMu) // So mua dt1 < dt2
+                        {
+                            sumDt.InsertTail(p1.Data.HeSo, p1.Data.SoMu);
+                            p1 = p1.pNext;
+                        }
+                        else // So mu cua dt2 <nhỏ hơn> dt1
+                        {
+                            sumDt.InsertTail(p2.Data.HeSo, p2.Data.SoMu);
+                            p2 = p2.pNext;
+                        }
+                    }
+                }
+                return sumDt;
+            }
+        }
+
+        static void Main(string[] args)
+        {
+            // 2x^3 + 5x - 1
+            DaThuc dt1 = DaThuc.InitDaThuc();
+            dt1.InsertTail(2, 3);
+            dt1.InsertTail(5, 1);
+            dt1.InsertTail(-1, 2);
+
+            dt1.Print();
+
+            DaThuc dt2 = DaThuc.InitDaThuc();
+            dt2.InsertTail(1, 3);
+            dt2.InsertTail(2, 1);
+            dt2.InsertTail(5, 2);
+
+            dt2.Print();
+
+            ////1.1.5 - Sap xep da thuc theo thu tu tang dan so mu
+            dt1.SapXepTheoSoMu();
+            dt2.SapXepTheoSoMu();
+            Console.WriteLine();
+            Console.WriteLine("Sap xep Da Thuc theo So Mu tang dan:");
+            dt1.Print();
+            dt2.Print();
+
+            ////1.1.6 - Tinh tong hai da thuc
+            Console.WriteLine();
+            Console.WriteLine("Tong hai Da Thuc:");
+            DaThuc sumDt = DaThuc.Sum(dt1, dt2);
+            sumDt.Print();
+
+            Console.Write("\nx = ");
+            int x = int.Parse(Console.ReadLine());
+            long result = sumDt.Calculate(x);
+
+            Console.WriteLine($"Gia tri da thuc tong la: {result}");
+
+            Console.ReadKey();
+        }
+    }
+}
+
