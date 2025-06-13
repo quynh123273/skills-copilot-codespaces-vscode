@@ -1,0 +1,207 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace baitap1._2_quan_ly_gio_hang
+{
+    internal class Program
+    {
+        public class SanPham
+        {
+            public int MaSanPham;
+            public string TenSanPham;
+            public int SoLuong;
+            public int GiaSanPham;
+
+            public static SanPham InitSanPham(int maSanPham, string tenSanPham, int soLuong, int giaSanPham)
+            {
+                SanPham sp = new SanPham();
+                sp.MaSanPham = maSanPham;
+                sp.TenSanPham = tenSanPham;
+                sp.SoLuong = soLuong;
+                sp.GiaSanPham = giaSanPham;
+                return sp;
+            }
+        }
+
+        public class Node
+        {
+            public SanPham Data;
+            public Node pNext;
+
+            public static Node InitNode(int maSanPham, string tenSanPham, int soLuong, int giaSanPham)
+            {
+                Node p = new Node();
+                p.Data = SanPham.InitSanPham(maSanPham, tenSanPham, soLuong, giaSanPham);
+                p.pNext = null;
+
+                return p;
+            }
+        }
+
+        public class GioHang
+        {
+            public Node pHead;
+            public Node pTail;
+
+            public static GioHang InitGioHang()
+            {
+                GioHang sp = new GioHang();
+                sp.pHead = null;
+                sp.pTail = null;
+                return sp;
+            }
+
+            //1.2.1 - Them san pham vao gio hang
+            public void InsertTail(int maSanPham, string tenSanPham, int soLuong, int giaSanPham)
+            {
+                Node p = Node.InitNode(maSanPham, tenSanPham, soLuong, giaSanPham);
+
+                if (pHead == null)
+                {
+                    pHead = p;
+                    pTail = p;
+                }
+                else
+                {
+                    pTail.pNext = p;
+                    pTail = p;
+                }
+            }
+
+            //1.2.4 - In san pham
+            public void Print()
+            {
+                for (Node p = pHead; p != null; p = p.pNext)
+                {
+                    Console.Write($"Ma san pham: {p.Data.MaSanPham}\nTen san Pham: {p.Data.TenSanPham}\nSo luong: {p.Data.SoLuong}\nGia tien: {p.Data.GiaSanPham}");
+                    Console.WriteLine("\n");
+                }
+                Console.WriteLine();
+            }
+
+            //1.2.2 - Xoa 1 san pham khoi GioHang dua vao MaSanPham
+            public void Delete(int maSanPham)
+            {
+                if (pHead == null) // nut dau = rong
+                {
+                    Console.WriteLine("Gio hang rong, khong co san pham de xoa.");
+                    return;
+                }
+
+                // TH1: xoa nut dau (pHead)
+                if (pHead.Data.MaSanPham == maSanPham)
+                {
+                    pHead = pHead.pNext;
+                    if (pHead == null) // pHead = rong sau khi da xoa
+                    {
+                        pTail = null;
+                    }
+                    Console.WriteLine($"Da xoa san pham co ma: {maSanPham}");
+                    return;
+                }
+
+                // TH2: duyet danh sach de tim
+                Node current = pHead;
+                Node previous = null;
+
+                while (current != null && current.Data.MaSanPham != maSanPham)
+                {
+                    previous = current;
+                    current = current.pNext;
+                }
+
+                if (current != null) // sp duoc tim thay
+                {
+                    previous.pNext = current.pNext;
+                    if (current == pTail) // neu xoa nut cuoi
+                    {
+                        pTail = previous;
+                    }
+                    Console.WriteLine($"Da xoa san pham co ma: {maSanPham}");
+                }
+                else // neu sp khong tim thay 
+                {
+                    Console.WriteLine($"Khong tim thay san pham co ma: {maSanPham} trong gio hang.");
+                }
+            }
+
+            //1.2.3 - Ham cap nhat so luong san pham dua vao ma san pham
+            public void CapNhatSoLuong(int maSanPham, int newSoLuong)
+            {
+                if (pHead == null)
+                {
+                    Console.WriteLine("Gio hang rong, khong co san pham de cap nhat.");
+                    return;
+                }
+
+                Node current = pHead;
+                while (current != null)
+                {
+                    if (current.Data.MaSanPham == maSanPham)
+                    {
+                        // tim va cap nhat so luong
+                        current.Data.SoLuong = newSoLuong;
+                        Console.WriteLine($"Da cap nhat so luong cho san pham {current.Data.TenSanPham} (Ma: {maSanPham}) thanh {newSoLuong}.");
+                        return;
+                    }
+                    current = current.pNext;
+                }
+
+                // Neu khong tim thay
+                Console.WriteLine($"Khong tim thay san pham co ma: {maSanPham} trong gio hang de cap nhat so luong.");
+            }
+
+            //1.2.5 - Tinh tong tien cua cac san pham trong gio hang
+            public long TongTienThanhToan()
+            {
+                long totalPrice = 0;
+                Node current = pHead;
+
+                if (pHead == null)
+                {                    
+                    return 0; //gio hang rong, tong = 0
+                }
+
+                while (current != null)
+                {
+                    totalPrice += (long)current.Data.SoLuong * current.Data.GiaSanPham;
+                    current = current.pNext;
+                }
+                return totalPrice;
+            }
+
+        } //ngoac dong cua GioHang 
+        static void Main(string[] args)
+        {
+            GioHang sp = GioHang.InitGioHang();
+            sp.InsertTail(001, "SamSung A01", 5, 1000000);
+            sp.InsertTail(002, "SamSung A02", 5, 1100000);
+            sp.InsertTail(003, "SamSung A03", 5, 1200000);
+
+            Console.WriteLine("--- Gio hang ban dau ---");
+            sp.Print();
+
+            // Xoa 1 san pham dua vao ma san pham
+            Console.WriteLine("--- Xoa san pham co ma 002 ---");
+            sp.Delete(002);
+            Console.WriteLine("--- Gio hang sau khi xoa 002 ---");
+            sp.Print();
+
+            //Cap nhat so luong
+            Console.WriteLine("--- Cap nhat so luong san pham co ma 001 thanh 2 ---");
+            sp.CapNhatSoLuong(001, 2);
+            Console.WriteLine("--- Gio hang sau khi cap nhat so luong 001 ---");
+            sp.Print();
+
+            //Tong tien san pham trong gio hang
+            long total = sp.TongTienThanhToan();
+            Console.WriteLine($"Tong tien san pham trong gio hang la: {total}");
+
+            Console.ReadKey();
+        }       
+    }
+}
+
